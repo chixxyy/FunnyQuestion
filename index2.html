@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+	<title>試題 2</title>
+	<style>
+		body { background: #eaeaea; }
+		.interviewee { position: fixed; bottom: 0; right: 0; padding: .5em .8em; background: white; opacity: .8; border-radius: 1em 0 0 0; }
+		#chartContainer { width: 100%; max-width: 900px; margin: 50px auto; }
+		canvas { display: block; max-width: 100%; height: auto; }
+	</style>
+</head>
+<body>
+	<div id="chartContainer">
+		<canvas id="myChart"></canvas>
+	</div>
+	<span class="interviewee">面試者：姓名</span>
+	<script>
+		window.onload = function () {
+			const ctx = document.getElementById('myChart').getContext('2d');
+			const chart = new Chart(ctx, {
+				type: 'line',
+				data: { labels: [], datasets: [] },
+				options: {
+					responsive: true,
+					scales: {
+						x: { 
+							type: 'time', 
+							time: { 
+								unit: 'minute', 
+								displayFormats: { minute: 'yyyy/MM/dd HH:mm' } 
+							}, 
+							title: { display: true, text: '日期時間' } 
+						},
+						y: { beginAtZero: true, title: { display: true, text: '第一 Y 軸' } },
+						y1: { 
+							position: 'right', 
+							beginAtZero: true, 
+							grid: { drawOnChartArea: false }, 
+							title: { display: true, text: '第二 Y 軸' } 
+						}
+					}
+				}
+			});
+
+			const apiUrls = [
+				'https://run.mocky.io/v3/d810b305-3a72-4a72-aacb-102d1f3787e1',
+				'https://run.mocky.io/v3/ed07c49e-d2c8-405f-a23e-3e9375026946',
+				'https://run.mocky.io/v3/0c8d487a-bba9-4226-8e7b-ef35d4cfb157',
+				'https://run.mocky.io/v3/53ce343b-970f-4966-a473-8ed606363c84',
+				'https://run.mocky.io/v3/72320346-3893-4e69-8172-6b70760f4c91?mocky-delay=1500ms'
+			];
+
+			Promise.all(apiUrls.slice(0, 4).map(url => fetch(url).then(res => res.json())))
+				.then(results => {
+					const labels = results[0].list.map(entry => new Date(entry.timestamp));
+					chart.data.labels = labels;
+
+					results.forEach((data, i) => {
+						chart.data.datasets.push({
+							label: `API ${i + 1}`,
+							data: data.list.map(entry => entry.value),
+							borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
+							fill: false,
+							yAxisID: 'y'
+						});
+					});
+
+					return fetch(apiUrls[4]).then(res => res.json());
+				})
+				.then(barData => {
+					chart.data.datasets.push({
+						label: 'API 5',
+						data: barData.list.map(entry => entry.value),
+						backgroundColor: 'rgba(255, 99, 132, 0.5)',
+						borderColor: 'rgba(255, 99, 132, 1)',
+						type: 'bar',
+						yAxisID: 'y1'
+					});
+
+					chart.update();
+				})
+				.catch(error => {
+					console.error('Error fetching API data:', error);
+				});
+		}
+	</script>
+</body>
+</html>

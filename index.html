@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>試題 1</title>
     <style>
+    .interviewee { position: fixed; bottom: 0; right: 0; padding: .5em .8em; background: white; opacity: .8; border-radius: 1em 0 0 0; }
     body {
         background: yellowgreen;
         font-family: 'Poppins', sans-serif;
@@ -61,7 +62,7 @@
     }
 
     .user-card {
-        background: white;
+        background: gold;
         border-radius: 10px;
         padding: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -89,18 +90,7 @@
         font-size: 12px;
     }
 
-    footer {
-        color: white;
-        padding: 20px;
-        text-align: center;
-        font-size: 24px;
-        margin-top: 20px;
-        transition: all 0.3s ease;
-    }
-    footer:hover {
-        background-color: green;
-        transform: scale(1.25);
-    }
+
     @media (max-width: 600px) {
         .user-card {
             max-width: 100%;
@@ -118,6 +108,7 @@
     
     <div class="user-container" id="user-container">
     </div>
+
     <footer>
         <span class="interviewee">面試者：紀祥文</span>
     </footer>
