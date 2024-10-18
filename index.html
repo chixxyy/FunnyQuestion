@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"
+    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>試題 1</title>
+    <style>
+    body {
+        background: yellowgreen;
+        font-family: 'Poppins', sans-serif;
+        padding: 20px;
+        margin: 0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-size: 24px;
+    }
+
+    #search-box-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    #search-box {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        border: 2px solid green;
+        border-radius: 5px;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+        margin-right: 10px;
+    }
+
+    #search-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: green;
+        color: white;
+        cursor: pointer;
+    }
+
+    .user-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 300px;
+        transition: transform 0.3s ease;
+    }
+
+    .user-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .user-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .user-email {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .user-address {
+        font-size: 12px;
+    }
+
+    footer {
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+    footer:hover {
+        background-color: green;
+        transform: scale(1.25);
+    }
+    @media (max-width: 600px) {
+        .user-card {
+            max-width: 100%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <h1>用戶資料</h1>
+    
+    <div id="search-box-container">
+        <input type="text" id="search-box" placeholder="搜尋用戶名稱...">
+        <button id="search-button">送出</button>
+    </div>
+    
+    <div class="user-container" id="user-container">
+    </div>
+    <footer>
+        <span class="interviewee">面試者：紀祥文</span>
+    </footer>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+        $.ajax({
+            url: 'https://run.mocky.io/v3/0c57d849-0e9a-459c-a143-41dc0dd38f56',
+            method: 'GET',
+            success: function (data) {
+            displayUsers(data);
+            },
+            error: function () {
+            swal.fire({
+                icon: 'error',
+                title: '錯誤',
+                text: '查無用戶資料!',
+            });
+            }
+        });
+
+        function displayUsers(users) {
+            const userContainer = $('#user-container');
+            userContainer.empty();
+
+            users.forEach(function (user) {
+            const userCard = `
+                <div class="user-card">
+                <div class="user-name">${user.name}</div>
+                <div class="user-email">Email: ${user.email}</div>
+                <div class="user-address">地址: ${user.address}</div>
+                </div>
+            `;
+            userContainer.append(userCard);
+            });
+        }
+
+        function searchUser() {
+            const searchQuery = $('#search-box').val().toLowerCase();
+            const regex = new RegExp(searchQuery, 'i');
+            let found = false;
+
+            $('.user-card').each(function () {
+            const userName = $(this).find('.user-name').text();
+
+            if (regex.test(userName)) {
+                $(this).show();
+                found = true;
+            } else {
+                $(this).hide();
+            }
+            });
+
+            if (!found) {
+            swal.fire({
+                icon: 'error',
+                title: '找不到',
+                text: '沒有符合的用戶',
+                timer: 1500,
+                timerProgressBar: true, 
+            });
+            }
+        }
+
+        $('#search-button').on('click', function () {
+            searchUser();
+        });
+
+        $('#search-box').on('keypress', function (e) {
+            if (e.key === 'Enter') {
+            searchUser();
+            }
+        });
+        });
+    </script>
+</body>
+</html>
