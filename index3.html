@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>試題 3：多選下拉選單</title>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 200px;
+            border: 1px solid black;
+            cursor: pointer;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+        
+        select {
+            display: none;
+        }
+
+        .content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            width: 100%;
+            border: 1px solid black;
+            box-sizing: border-box;
+        }
+
+        .content label {
+            display: block;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        /* Hover 效果 */
+        .content label:hover {
+            background-color: gray;
+            color: white;
+        }
+
+        /* :focus-within 顯示下拉選單 */
+        .dropdown:focus-within .content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<form id="testForm" onsubmit="handleSubmit(event)">
+    <div class="dropdown" tabindex="0">
+        <!-- 顯示已選項目的區域 -->
+        <div id="selectedValues">選擇項目</div>
+
+        <!-- 下拉選單 -->
+        <div class="content">
+            <label><input type="checkbox" value="選項 1" onchange="updateSelection()"> 選項 1</label>
+            <label><input type="checkbox" value="選項 2" onchange="updateSelection()"> 選項 2</label>
+            <label><input type="checkbox" value="選項 3" onchange="updateSelection()"> 選項 3</label>
+        </div>
+    </div>
+
+    <button type="submit">提交</button>
+</form>
+
+<script>
+    // 已選項目
+    function updateSelection() {
+        const checkboxes = document.querySelectorAll('.content input');
+        const selected = Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+        document.getElementById('selectedValues').innerText = selected.length ? selected.join(', ') : '選擇項目';
+    }
+
+    // 提交處理
+    function handleSubmit(event) {
+        event.preventDefault();
+        const selectedValues = Array.from(document.querySelectorAll('.content input'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+        alert('已選擇的項目: ' + selectedValues.join(', '));
+    }
+</script>
+
+</body>
+</html>
