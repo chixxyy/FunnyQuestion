@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>試題 3：多選下拉選單</title>
+    <title>試題 3：下拉多選單</title>
     <style>
         .dropdown-container {
             position: relative;
@@ -43,8 +43,8 @@
             background-color: #ddd;
         }
 
-        /* 隱藏 <select> */
-        #multiSelect {
+        /* 隱藏 multiple 選單 */
+        #multipleSelect {
             display: none;
         }
     </style>
@@ -52,14 +52,14 @@
 <body>
 
 <form onsubmit="handleSubmit(event)">
-    <select id="multiSelect" multiple>
+    <select id="multipleSelect" multiple>
         <option value="選項 1">選項 1</option>
         <option value="選項 2">選項 2</option>
         <option value="選項 3">選項 3</option>
     </select>
 
     <div class="dropdown-container">
-        <div class="dropdown-select" id="display" onclick="toggleDropdown()">選擇項目</div>
+        <div class="dropdown-select" id="display" onclick="switchDropdown()">點擊選擇</div>
         <div class="dropdown-content" id="dropdownContent"></div>
     </div>
 
@@ -68,12 +68,12 @@
 
 <script>
     // 初始化下拉選單
-    function initializeMultiSelect() {
-        const select = document.getElementById('multiSelect');
+    function initializeMultipleSelect() {
+        const select = document.getElementById('multipleSelect');
         const display = document.getElementById('display');
         const dropdownContent = document.getElementById('dropdownContent');
 
-        // 將 <option> 轉為 checkbox
+        // 將 option 轉為 checkbox
         Array.from(select.options).forEach(option => {
             const label = document.createElement('label');
             const checkbox = document.createElement('input');
@@ -81,7 +81,7 @@
             checkbox.value = option.value;
             checkbox.checked = option.selected;
 
-            // 監聽 checkbox 與 <option> 的同步狀態
+            // 監聽 checkbox 與 option 的同步狀態
             checkbox.addEventListener('change', () => {
                 option.selected = checkbox.checked;
                 updateDisplay();
@@ -97,13 +97,13 @@
 
     // 更新選擇項目
     function updateDisplay() {
-        const selected = Array.from(document.querySelectorAll('#multiSelect option:checked'))
+        const selected = Array.from(document.querySelectorAll('#multipleSelect option:checked'))
             .map(option => option.text);
-        document.getElementById('display').innerText = selected.length ? selected.join(', ') : '選擇項目';
+        document.getElementById('display').innerText = selected.length ? selected.join(', ') : '點擊選擇';
     }
 
     // 切換下拉選單
-    function toggleDropdown() {
+    function switchDropdown() {
         const dropdown = document.getElementById('dropdownContent');
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
@@ -111,13 +111,12 @@
     // 提交表單顯示
     function handleSubmit(event) {
         event.preventDefault();
-        const selectedValues = Array.from(document.querySelectorAll('#multiSelect option:checked'))
+        const selectedValues = Array.from(document.querySelectorAll('#multipleSelect option:checked'))
             .map(option => option.value);
         alert('已選擇的項目: ' + selectedValues.join(', '));
     }
 
-    // 初始化
-    initializeMultiSelect();
+    initializeMultipleSelect();
 </script>
 
 </body>
