@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>試題 3：下拉多選單</title>
+    <title>試題 3：元件化下拉選單</title>
     <style>
         .dropdown-container {
             position: relative;
@@ -42,81 +42,67 @@
         .dropdown-content label:hover {
             background-color: #ddd;
         }
-
-        /* 隱藏 multiple 選單 */
-        #multipleSelect {
-            display: none;
-        }
     </style>
 </head>
 <body>
 
-<form onsubmit="handleSubmit(event)">
-    <select id="multipleSelect" multiple>
-        <option value="選項 1">選項 1</option>
-        <option value="選項 2">選項 2</option>
-        <option value="選項 3">選項 3</option>
-    </select>
-
-    <div class="dropdown-container">
-        <div class="dropdown-select" id="display" onclick="switchDropdown()">點擊選擇</div>
-        <div class="dropdown-content" id="dropdownContent"></div>
-    </div>
-
+<form id="Form">
+    <label class="dropdown-container">
+        <div multiple class="dropdown-select" id="display" onclick="toggleDropdown()">點擊選擇</div>
+        <div class="dropdown-content" id="dropdownContent">
+        </div>
+    </label>
     <button type="submit">提交</button>
 </form>
 
 <script>
-    // 初始化下拉選單
-    function initializeMultipleSelect() {
-        const select = document.getElementById('multipleSelect');
-        const display = document.getElementById('display');
-        const dropdownContent = document.getElementById('dropdownContent');
+    const options = ['選項 1', '選項 2', '選項 3', '選項 4'];
+    let arr = [];
 
-        // 將 option 轉為 checkbox
-        Array.from(select.options).forEach(option => {
+    // 初始化下拉選單
+    function initializeDropdown() {
+        const dropdownContent = document.getElementById('dropdownContent');
+        options.forEach(option => {
             const label = document.createElement('label');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = option.value;
-            checkbox.checked = option.selected;
-
-            // 監聽 checkbox 與 option 的同步狀態
-            checkbox.addEventListener('change', () => {
-                option.selected = checkbox.checked;
-                updateDisplay();
-            });
-
+            checkbox.value = option;
+            checkbox.addEventListener('change', () => updateDisplay(option, checkbox.checked));
             label.appendChild(checkbox);
-            label.append(option.text);
+            label.append(option);
             dropdownContent.appendChild(label);
         });
-
-        updateDisplay();
+        updateDisplay(); // 更新顯示區域
     }
 
-    // 更新選擇項目
-    function updateDisplay() {
-        const selected = Array.from(document.querySelectorAll('#multipleSelect option:checked'))
-            .map(option => option.text);
-        document.getElementById('display').innerText = selected.length ? selected.join(', ') : '點擊選擇';
+    function updateDisplay(option, checked) {
+        if (typeof option !== 'undefined') {
+            // 當 checkbox 狀態改變時，更新選中的項目
+            if (checked) {
+                arr.push(option);
+            } else {
+                arr = arr.filter(item => item !== option);
+            }
+        }
+        
+        // 更新顯示選中的項目
+        const display = document.getElementById('display');
+        display.innerText = arr.length ? arr.join(', ') : '點擊選擇';
     }
 
-    // 切換下拉選單
-    function switchDropdown() {
+    // 切換下拉選單顯示
+    function toggleDropdown() {
         const dropdown = document.getElementById('dropdownContent');
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
 
-    // 提交表單顯示
-    function handleSubmit(event) {
+    // 提交表單時顯示選中的項目
+    document.getElementById('Form').onsubmit = function(event) {
         event.preventDefault();
-        const selectedValues = Array.from(document.querySelectorAll('#multipleSelect option:checked'))
-            .map(option => option.value);
-        alert('已選擇的項目: ' + selectedValues.join(', '));
+        alert('已選擇的項目: ' + arr.join(', '));
     }
 
-    initializeMultipleSelect();
+    initializeDropdown();
 </script>
 
 </body>
